@@ -1,0 +1,149 @@
+:root {
+  --primary-orange: #f97316;
+  --primary-orange-hover: #ea580c;
+}
+
+/* Light Theme Variables */
+[data-bs-theme="light"] {
+  --app-bg: #f8fafc;
+  --app-surface: #ffffff;
+  --app-border: #e2e8f0;
+  --app-text-muted: #64748b;
+  --grid-color-1: #ffffff;
+  --grid-color-2: #e2e8f0;
+}
+
+/* Dark Theme Variables with Enhanced Contrast */
+[data-bs-theme="dark"] {
+  --app-bg: #0f172a;
+  --app-surface: #1e293b;
+  --app-border: #334155;
+  --app-text-muted: #cbd5e1; /* Boosted from muted #94a3b8 to crisp slate */
+  --grid-color-1: #1e293b;
+  --grid-color-2: #0f172a;
+
+  /* Global Bootstrap Theme Variable Overrides */
+  --bs-body-color: #f8fafc;
+  --bs-secondary-color: #cbd5e1;
+  --bs-tertiary-color: #94a3b8;
+  --bs-border-color: #334155;
+  --bs-tertiary-bg: #1e293b;
+  --bs-secondary-bg: #1e293b;
+}
+
+body {
+  background-color: var(--app-bg);
+  min-height: 100vh;
+  transition: background-color 0.25s ease, color 0.25s ease;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* -------------------------------------------------------------
+   GLOBAL DARK MODE CONTRAST & READABILITY FIXES
+   ------------------------------------------------------------- */
+
+/* Fix washed out description / subtitle text */
+[data-bs-theme="dark"] .text-secondary,
+[data-bs-theme="dark"] .text-muted {
+  color: #cbd5e1 !important;
+}
+
+/* Form labels and input prepend/append icons */
+[data-bs-theme="dark"] .form-label,
+[data-bs-theme="dark"] .form-check-label,
+[data-bs-theme="dark"] .input-group-text {
+  color: #f1f5f9;
+}
+
+/* Fix .btn-light rendering blinding white backgrounds in dark mode */
+[data-bs-theme="dark"] .btn-light {
+  background-color: transparent !important;
+  color: #cbd5e1 !important;
+  border-color: transparent !important;
+}
+
+[data-bs-theme="dark"] .btn-light:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+/* Neutral outline buttons contrast fix */
+[data-bs-theme="dark"] .btn-outline-secondary {
+  color: #cbd5e1;
+  border-color: #475569;
+}
+
+[data-bs-theme="dark"] .btn-outline-secondary:hover {
+  background-color: #334155;
+  border-color: #475569;
+  color: #ffffff;
+}
+
+/* Input boxes & selects text color */
+[data-bs-theme="dark"] .form-control,
+[data-bs-theme="dark"] .form-select {
+  background-color: #1e293b;
+  border-color: #334155;
+  color: #f8fafc;
+}
+
+[data-bs-theme="dark"] .form-control::placeholder {
+  color: #64748b;
+}
+
+/* -------------------------------------------------------------
+   COMPONENTS & UTILITIES
+   ------------------------------------------------------------- */
+
+/* Custom dashed dropzone that respects themes */
+.dropzone-container {
+  border: 2px dashed var(--app-border);
+  background-color: var(--app-surface);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.dropzone-container:hover,
+.dropzone-container.drag-active {
+  border-color: var(--primary-orange) !important;
+  background-color: var(--app-surface);
+  transform: translateY(-2px);
+}
+
+/* Cat orange brand button */
+.btn-snapcat {
+  background-color: var(--primary-orange) !important;
+  border-color: var(--primary-orange) !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.btn-snapcat:hover,
+.btn-snapcat:focus {
+  background-color: var(--primary-orange-hover) !important;
+  border-color: var(--primary-orange-hover) !important;
+  color: #ffffff !important;
+}
+
+/* Adaptive Checkerboard to preview transparent PNGs */
+.bg-transparency-grid {
+  background-color: var(--grid-color-1);
+  background-image: 
+    linear-gradient(45deg, var(--grid-color-2) 25%, transparent 25%), 
+    linear-gradient(-45deg, var(--grid-color-2) 25%, transparent 25%), 
+    linear-gradient(45deg, transparent 75%, var(--grid-color-2) 75%), 
+    linear-gradient(-45deg, transparent 75%, var(--grid-color-2) 75%);
+  background-size: 16px 16px;
+  background-position: 0 0, 0 8px, 8px -8px, -8px 0px;
+}
+
+/* Homepage Tool Cards */
+.tool-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-orange) !important;
+}
