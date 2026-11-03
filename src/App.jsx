@@ -19,6 +19,7 @@ const TOOL_CARDS = [
     icon: 'bi-file-earmark-zip-fill',
     badge: 'Popular',
     iconColor: '#0ea5e9',
+    seoTitle: 'Free Image Compressor down to 5 KB & 20 KB',
   },
   {
     id: TABS.RESIZE,
@@ -26,6 +27,7 @@ const TOOL_CARDS = [
     desc: 'Define new pixel dimensions or scale by percentage in bulk.',
     icon: 'bi-arrows-angle-expand',
     iconColor: '#8b5cf6',
+    seoTitle: 'Bulk Image Resizer with Exact Dimensions',
   },
   {
     id: TABS.TRANSPARENT,
@@ -34,6 +36,7 @@ const TOOL_CARDS = [
     icon: 'bi-eraser-fill',
     badge: 'AI Smart',
     iconColor: '#f97316',
+    seoTitle: 'In-Browser AI Background Remover & Cutout',
   },
   {
     id: TABS.CONVERT,
@@ -41,6 +44,7 @@ const TOOL_CARDS = [
     desc: 'Convert any image to WebP, PNG, or JPG in bulk with custom quality.',
     icon: 'bi-arrow-repeat',
     iconColor: '#10b981',
+    seoTitle: 'Fast Image Converter (JPG, PNG, WebP, HEIC)',
   },
   {
     id: TABS.PDF,
@@ -48,6 +52,7 @@ const TOOL_CARDS = [
     desc: 'Combine multiple photos into a clean, printable A4 PDF document.',
     icon: 'bi-file-earmark-pdf-fill',
     iconColor: '#ef4444',
+    seoTitle: 'Convert Photos & Documents to A4 PDF',
   },
   {
     id: TABS.EDITOR,
@@ -55,6 +60,7 @@ const TOOL_CARDS = [
     desc: 'Crop, rotate, and adjust aspect ratios for social media and documents.',
     icon: 'bi-crop',
     iconColor: '#f59e0b',
+    seoTitle: 'Free Online Image Cropper & Aspect Ratio Tool',
   },
   {
     id: TABS.HTML_TO_IMAGE,
@@ -63,6 +69,7 @@ const TOOL_CARDS = [
     icon: 'bi-globe2',
     badge: 'URL & Code',
     iconColor: '#ec4899',
+    seoTitle: 'HTML and Webpage Snapshot to High-Res Image',
   },
   {
     id: TABS.WATERMARK,
@@ -70,15 +77,21 @@ const TOOL_CARDS = [
     desc: 'Stamp an image or text over your photos in seconds. Choose typography, transparency and position.',
     icon: 'bi-shield-shaded',
     iconColor: '#06b6d4',
+    seoTitle: 'Batch Watermark Photos with Text or Logo',
   },
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState(null);
+  // Read hash on initial page load (e.g., https://snapcat.in/#compress)
+  const [activeTab, setActiveTab] = useState(() => {
+    const hash = window.location.hash.replace('#', '');
+    return Object.values(TABS).includes(hash) ? hash : null;
+  });
+
   const [switchOpen, setSwitchOpen] = useState(false);
   const switchDropdownRef = useRef(null);
 
-  // Persistent Theme State
+  // Persistent Day/Night Theme State
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('snapcat_theme');
     if (saved) return saved;
@@ -89,6 +102,43 @@ export default function App() {
     document.documentElement.setAttribute('data-bs-theme', theme);
     localStorage.setItem('snapcat_theme', theme);
   }, [theme]);
+
+  // Synchronize URL hash, Title, and Meta Description on Tab Switch
+  useEffect(() => {
+    const descTag = document.querySelector('meta[name="description"]');
+    if (activeTab) {
+      window.history.replaceState(null, '', `#${activeTab}`);
+      const meta = TOOL_CARDS.find((t) => t.id === activeTab);
+      if (meta) {
+        document.title = `${meta.seoTitle || meta.title} — SnapCat`;
+        if (descTag) {
+          descTag.setAttribute(
+            'content',
+            `${meta.desc} Process photos 100% locally on your device with zero cloud uploads.`
+          );
+        }
+      }
+    } else {
+      window.history.replaceState(null, '', window.location.pathname);
+      document.title = 'SnapCat — Fast, Free & 100% Private In-Browser Image Suite';
+      if (descTag) {
+        descTag.setAttribute(
+          'content',
+          'Convert, compress down to 5 KB, remove backgrounds, crop, and merge images to PDF 100% locally in your browser. Zero uploads, zero tracking.'
+        );
+      }
+    }
+  }, [activeTab]);
+
+  // Listen to browser Back/Forward button navigation
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      setActiveTab(Object.values(TABS).includes(hash) ? hash : null);
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   // Close workspace dropdown when clicking outside
   useEffect(() => {
@@ -113,7 +163,10 @@ export default function App() {
       <Navbar
         theme={theme}
         onToggleTheme={toggleTheme}
-        onHomeClick={() => setActiveTab(null)}
+        onHomeClick={() => {
+          setActiveTab(null);
+          window.location.hash = '';
+        }}
         activeTab={activeTab}
         onSelectTab={(tabId) => {
           setActiveTab(tabId);
@@ -132,7 +185,7 @@ export default function App() {
               <h1 className="fw-bolder mb-2 text-body display-6">
                 Every tool you need to work with images in <span style={{ color: 'var(--primary-orange)' }}>one place</span>
               </h1>
-              <p className="text-secondary mx-auto" style={{ maxWidth: '650px' }}>
+              <p className="text-secondary mx-auto" style={{ maxWidth: '680px' }}>
                 Every tool 100% free, private, and running directly in your browser. Zero file uploads, zero server tracking.
               </p>
             </div>
@@ -184,6 +237,51 @@ export default function App() {
                 </div>
               ))}
             </div>
+
+            {/* CRAWLABLE SEO / FAQ SECTION */}
+            <section className="mt-5 pt-5 border-top">
+              <div className="text-center mb-4">
+                <h2 className="h4 fw-bold text-body">Why Use SnapCat for Image Editing?</h2>
+                <p className="text-secondary small mx-auto" style={{ maxWidth: '600px' }}>
+                  A complete suite built for speed, exam document compliance, and total user privacy.
+                </p>
+              </div>
+
+              <div className="row g-4 text-secondary small">
+                <div className="col-12 col-md-4">
+                  <div className="p-3 rounded-4 bg-body border h-100 shadow-sm">
+                    <h3 className="h6 fw-bold text-body mb-2 d-flex align-items-center gap-2">
+                      <i className="bi bi-shield-check text-success fs-5"></i> 100% Client-Side Privacy
+                    </h3>
+                    <p className="mb-0">
+                      Standard converters upload your sensitive photos, identity cards, and personal documents to foreign servers. SnapCat runs locally inside your browser via Canvas API and WebAssembly. Your photos never touch any server.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="col-12 col-md-4">
+                  <div className="p-3 rounded-4 bg-body border h-100 shadow-sm">
+                    <h3 className="h6 fw-bold text-body mb-2 d-flex align-items-center gap-2">
+                      <i className="bi bi-file-earmark-check text-primary fs-5"></i> Exam & Portal Ready (5 KB – 50 KB)
+                    </h3>
+                    <p className="mb-0">
+                      Government portals (SSC, UPSC, state examinations, visa applications) impose strict size ceilings. SnapCat includes smart micro-presets to compress photos and signatures down to exact targets without blurry pixelation.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="col-12 col-md-4">
+                  <div className="p-3 rounded-4 bg-body border h-100 shadow-sm">
+                    <h3 className="h6 fw-bold text-body mb-2 d-flex align-items-center gap-2">
+                      <i className="bi bi-lightning-charge-fill text-warning fs-5"></i> Zero Bandwidth Waste
+                    </h3>
+                    <p className="mb-0">
+                      Processing happens instantly on your device hardware. You never waste time or mobile data waiting for massive high-resolution photos to upload and download.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </section>
           </>
         ) : (
           /* VIEW 2: ACTIVE TOOL WORKSPACE */
@@ -194,6 +292,7 @@ export default function App() {
                 onClick={() => {
                   setActiveTab(null);
                   setSwitchOpen(false);
+                  window.location.hash = '';
                 }}
                 className="btn btn-sm btn-outline-secondary rounded-pill px-3 d-flex align-items-center gap-1.5"
               >
@@ -250,7 +349,7 @@ export default function App() {
             {/* Active Tool Header */}
             {activeToolMeta && (
               <div className="text-center mb-4">
-                <h3 className="fw-bold text-body mb-1">{activeToolMeta.title}</h3>
+                <h1 className="h3 fw-bold text-body mb-1">{activeToolMeta.title}</h1>
                 <p className="text-secondary small mb-0">{activeToolMeta.desc}</p>
               </div>
             )}
