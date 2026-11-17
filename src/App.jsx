@@ -81,13 +81,21 @@ const TOOL_CARDS = [
   },
 ];
 
-export default function App() {
-  // Read hash on initial page load (e.g., https://snapcat.in/#compress)
-  const [activeTab, setActiveTab] = useState(() => {
-    const hash = window.location.hash.replace('#', '');
-    return Object.values(TABS).includes(hash) ? hash : null;
-  });
+const validTabValues = Object.values(TABS);
 
+const getTabFromLocation = () => {
+  const pathSlug = window.location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
+  if (validTabValues.includes(pathSlug)) return pathSlug;
+
+  // Support legacy #hash links on initial load
+  const hashSlug = window.location.hash.replace('#', '').toLowerCase();
+  if (validTabValues.includes(hashSlug)) return hashSlug;
+
+  return null;
+};
+
+export default function App() {
+  const [activeTab, setActiveTab] = useState(getTabFromLocation);
   const [switchOpen, setSwitchOpen] = useState(false);
   const switchDropdownRef = useRef(null);
 
@@ -103,12 +111,35 @@ export default function App() {
     localStorage.setItem('snapcat_theme', theme);
   }, [theme]);
 
-  // Synchronize URL hash, Title, and Meta Description on Tab Switch
+  // Clean SPA Navigation Helper
+  const navigateToTab = (tabId) => {
+    const targetPath = tabId ? `/${tabId}` : '/';
+    if (window.location.pathname !== targetPath || window.location.hash) {
+      window.history.pushState({}, '', targetPath);
+    }
+    setActiveTab(tabId);
+    setSwitchOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Synchronize Title, Meta Description, and Canonical Tag on Route Change
   useEffect(() => {
     const descTag = document.querySelector('meta[name="description"]');
+    let canonicalTag = document.querySelector('link[rel="canonical"]');
+    if (!canonicalTag) {
+      canonicalTag = document.createElement('link');
+      canonicalTag.setAttribute('rel', 'canonical');
+      document.head.appendChild(canonicalTag);
+    }
+
+    // Upgrade legacy #hash URL in address bar to clean /path
+    if (window.location.hash && activeTab) {
+      window.history.replaceState({}, '', `/${activeTab}`);
+    }
+
     if (activeTab) {
-      window.history.replaceState(null, '', `#${activeTab}`);
       const meta = TOOL_CARDS.find((t) => t.id === activeTab);
+      canonicalTag.setAttribute('href', `https://www.snapcat.in/${activeTab}`);
       if (meta) {
         document.title = `${meta.seoTitle || meta.title} — SnapCat`;
         if (descTag) {
@@ -119,7 +150,7 @@ export default function App() {
         }
       }
     } else {
-      window.history.replaceState(null, '', window.location.pathname);
+      canonicalTag.setAttribute('href', 'https://www.snapcat.in/');
       document.title = 'SnapCat — Fast, Free & 100% Private In-Browser Image Suite';
       if (descTag) {
         descTag.setAttribute(
@@ -130,14 +161,13 @@ export default function App() {
     }
   }, [activeTab]);
 
-  // Listen to browser Back/Forward button navigation
+  // Listen to browser Back/Forward navigation
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '');
-      setActiveTab(Object.values(TABS).includes(hash) ? hash : null);
+    const handlePopState = () => {
+      setActiveTab(getTabFromLocation());
     };
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   // Close workspace dropdown when clicking outside
@@ -163,15 +193,9 @@ export default function App() {
       <Navbar
         theme={theme}
         onToggleTheme={toggleTheme}
-        onHomeClick={() => {
-          setActiveTab(null);
-          window.location.hash = '';
-        }}
+        onHomeClick={() => navigateToTab(null)}
         activeTab={activeTab}
-        onSelectTab={(tabId) => {
-          setActiveTab(tabId);
-          setSwitchOpen(false);
-        }}
+        onSelectTab={(tabId) => navigateToTab(tabId)}
         toolCards={TOOL_CARDS}
       />
 
@@ -190,13 +214,17 @@ export default function App() {
               </p>
             </div>
 
-            {/* iLoveIMG Grid Cards */}
+            {/* Crawlable Tool Grid Cards */}
             <div className="row g-4">
               {TOOL_CARDS.map((tool) => (
                 <div key={tool.id} className="col-12 col-sm-6 col-lg-4">
-                  <div
-                    onClick={() => setActiveTab(tool.id)}
-                    className="card h-100 border-0 bg-body shadow-sm rounded-4 p-4 tool-card position-relative"
+                  <a
+                    href={`/${tool.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigateToTab(tool.id);
+                    }}
+                    className="card h-100 border-0 bg-body shadow-sm rounded-4 p-4 tool-card position-relative text-decoration-none"
                     style={{
                       cursor: 'pointer',
                       border: '1px solid var(--bs-border-color-translucent)',
@@ -231,9 +259,9 @@ export default function App() {
                     </div>
 
                     {/* Title & Description */}
-                    <h5 className="fw-bold mb-2 text-body">{tool.title}</h5>
+                    <h2 className="h5 fw-bold mb-2 text-body">{tool.title}</h2>
                     <p className="text-secondary small mb-0 flex-grow-1">{tool.desc}</p>
-                  </div>
+                  </a>
                 </div>
               ))}
             </div>
@@ -286,19 +314,19 @@ export default function App() {
         ) : (
           /* VIEW 2: ACTIVE TOOL WORKSPACE */
           <div>
-            {/* Back button & quick Switcher dropdown */}
+            {/* Back link & quick Switcher dropdown */}
             <div className="d-flex align-items-center justify-content-between mb-4">
-              <button
-                onClick={() => {
-                  setActiveTab(null);
-                  setSwitchOpen(false);
-                  window.location.hash = '';
+              <a
+                href="/"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateToTab(null);
                 }}
                 className="btn btn-sm btn-outline-secondary rounded-pill px-3 d-flex align-items-center gap-1.5"
               >
                 <i className="bi bi-arrow-left"></i>
                 <span>All Tools</span>
-              </button>
+              </a>
 
               {/* Controlled React Dropdown */}
               <div className="position-relative" ref={switchDropdownRef}>
@@ -324,10 +352,11 @@ export default function App() {
                   >
                     {TOOL_CARDS.map((tool) => (
                       <li key={tool.id}>
-                        <button
-                          onClick={() => {
-                            setActiveTab(tool.id);
-                            setSwitchOpen(false);
+                        <a
+                          href={`/${tool.id}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            navigateToTab(tool.id);
                           }}
                           className={`dropdown-item d-flex align-items-center gap-2 small px-3 py-2 ${
                             activeTab === tool.id ? 'active btn-snapcat' : 'text-body'
@@ -338,7 +367,7 @@ export default function App() {
                             style={{ color: activeTab === tool.id ? '#ffffff' : tool.iconColor, width: '18px' }}
                           ></i>
                           <span>{tool.title}</span>
-                        </button>
+                        </a>
                       </li>
                     ))}
                   </ul>

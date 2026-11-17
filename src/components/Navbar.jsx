@@ -34,7 +34,7 @@ export default function Navbar({
         <div className="d-flex align-items-center gap-3">
           <a
             className="navbar-brand d-flex align-items-center gap-2 fw-bold mb-0"
-            href="#"
+            href="/"
             onClick={(e) => {
               e.preventDefault();
               if (onHomeClick) onHomeClick();
@@ -68,6 +68,7 @@ export default function Navbar({
                   onClick={() => setDropdownOpen((prev) => !prev)}
                   className="btn btn-sm btn-outline-secondary rounded-pill px-2.5 py-1.5 d-flex align-items-center gap-1"
                   title="Switch to another tool"
+                  aria-expanded={dropdownOpen}
                 >
                   <span className="small">More Tools</span>
                   <i className={`bi bi-chevron-${dropdownOpen ? 'up' : 'down'} small`}></i>
@@ -88,10 +89,11 @@ export default function Navbar({
                       Switch Tool
                     </div>
                     {otherTools.map((tool) => (
-                      <button
+                      <a
                         key={tool.id}
-                        type="button"
-                        onClick={() => {
+                        href={`/${tool.id}`}
+                        onClick={(e) => {
+                          e.preventDefault();
                           onSelectTab(tool.id);
                           setDropdownOpen(false);
                         }}
@@ -100,12 +102,13 @@ export default function Navbar({
                       >
                         <i className={`bi ${tool.icon}`} style={{ color: tool.iconColor, width: '18px' }}></i>
                         <span>{tool.title}</span>
-                      </button>
+                      </a>
                     ))}
                     <div className="dropdown-divider my-1"></div>
-                    <button
-                      type="button"
-                      onClick={() => {
+                    <a
+                      href="/"
+                      onClick={(e) => {
+                        e.preventDefault();
                         onHomeClick();
                         setDropdownOpen(false);
                       }}
@@ -113,7 +116,7 @@ export default function Navbar({
                     >
                       <i className="bi bi-grid-fill"></i>
                       <span>All Tools Dashboard</span>
-                    </button>
+                    </a>
                   </div>
                 )}
               </div>
@@ -129,9 +132,11 @@ export default function Navbar({
           </div>
 
           <button
+            type="button"
             onClick={onToggleTheme}
             className="btn btn-outline-secondary border-0 rounded-circle d-flex align-items-center justify-content-center p-2"
             title={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
+            aria-label={`Switch to ${theme === 'dark' ? 'Light' : 'Dark'} mode`}
             style={{ width: '40px', height: '40px' }}
           >
             {theme === 'dark' ? (
