@@ -358,9 +358,8 @@ export default function App() {
                             e.preventDefault();
                             navigateToTab(tool.id);
                           }}
-                          className={`dropdown-item d-flex align-items-center gap-2 small px-3 py-2 ${
-                            activeTab === tool.id ? 'active btn-snapcat' : 'text-body'
-                          }`}
+                          className={`dropdown-item d-flex align-items-center gap-2 small px-3 py-2 ${activeTab === tool.id ? 'active btn-snapcat' : 'text-body'
+                            }`}
                         >
                           <i
                             className={`bi ${tool.icon}`}
@@ -394,6 +393,36 @@ export default function App() {
               {activeTab === TABS.HTML_TO_IMAGE && <HtmlToImageTool />}
               {activeTab === TABS.WATERMARK && <WatermarkTool />}
             </div>
+
+            {/* Add this right below <div className="tab-content"> in View 2 of App.jsx */}
+            {activeToolMeta && (
+              <section className="mt-5 pt-4 border-top">
+                <div className="p-4 rounded-4 bg-body border shadow-sm">
+                  <h2 className="h5 fw-bold text-body mb-2">
+                    About {activeToolMeta.title}
+                  </h2>
+                  <p className="text-secondary small mb-3">
+                    {activeToolMeta.seoTitle}. {activeToolMeta.desc} Unlike cloud converters that upload your personal photos or identity documents to external servers, SnapCat processes every file directly inside your browser using HTML5 Canvas and WebAssembly.
+                  </p>
+                  <div className="d-flex flex-wrap gap-2 pt-2 border-top">
+                    <span className="text-secondary small fw-semibold me-1">More Free Tools:</span>
+                    {TOOL_CARDS.filter((t) => t.id !== activeTab).map((tool) => (
+                      <a
+                        key={tool.id}
+                        href={`/${tool.id}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigateToTab(tool.id);
+                        }}
+                        className="badge rounded-pill text-decoration-none bg-body-secondary text-body px-3 py-2 fw-normal"
+                      >
+                        {tool.title}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
           </div>
         )}
       </main>

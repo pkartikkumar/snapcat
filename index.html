@@ -3,68 +3,126 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://snapcat.in/" />
+    <!-- Canonical URL (Aligned with www.snapcat.in & sitemap.xml) -->
+    <link rel="canonical" href="https://www.snapcat.in/" />
 
     <!-- Primary SEO Metadata -->
-    <title>SnapCat — Fast, Free & 100% Private In-Browser Image Suite</title>
-    <meta name="title" content="SnapCat — Fast, Free & 100% Private In-Browser Image Suite" />
+    <title>SnapCat — Fast, Free &amp; 100% Private In-Browser Image Suite</title>
+    <meta name="title" content="SnapCat — Fast, Free &amp; 100% Private In-Browser Image Suite" />
     <meta
       name="description"
       content="Compress images to 5 KB, remove backgrounds with AI cutout, resize, convert formats, compile A4 PDFs, crop, and watermark photos. 100% client-side with zero file uploads."
     />
-    <meta
-      name="keywords"
-      content="image compressor 20kb, reduce photo size to 50kb, transparent png maker, background remover without upload, images to pdf converter, crop image online, watermark photo in browser, client-side image editor, snapcat"
-    />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta name="author" content="SnapCat" />
     <meta name="theme-color" content="#f97316" />
 
     <!-- Open Graph / Facebook / WhatsApp -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://snapcat.in/" />
+    <meta property="og:url" content="https://www.snapcat.in/" />
     <meta property="og:site_name" content="SnapCat" />
-    <meta property="og:title" content="SnapCat — Fast, Free & Private In-Browser Image Suite" />
+    <meta property="og:title" content="SnapCat — Fast, Free &amp; Private In-Browser Image Suite" />
     <meta
       property="og:description"
       content="Process pictures directly in your browser. Micro-compression down to 5 KB, instant AI background removal, and multi-image A4 PDF creation without uploading files to servers."
     />
-    <meta property="og:image" content="https://snapcat.in/og-preview.png" />
+    <meta property="og:image" content="https://www.snapcat.in/og-preview.png" />
 
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://snapcat.in/" />
-    <meta name="twitter:title" content="SnapCat — Free & Private In-Browser Image Tools" />
+    <meta name="twitter:url" content="https://www.snapcat.in/" />
+    <meta name="twitter:title" content="SnapCat — Free &amp; Private In-Browser Image Tools" />
     <meta
       name="twitter:description"
       content="Compress, remove backgrounds, resize, and convert images privately in your browser with zero server tracking."
     />
-    <meta name="twitter:image" content="https://snapcat.in/og-preview.png" />
+    <meta name="twitter:image" content="https://www.snapcat.in/og-preview.png" />
 
-    <!-- Structured Data (JSON-LD) for Search Engine Rich Snippets -->
+    <!-- Structured Data (JSON-LD) for Rich Snippets & FAQ Dropdowns -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "SnapCat",
-        "url": "https://snapcat.in",
-        "applicationCategory": "MultimediaApplication",
-        "operatingSystem": "All modern web browsers",
-        "browserRequirements": "Requires JavaScript and HTML5 Canvas support",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "INR"
-        },
-        "description": "Browser-native image editing suite featuring deep compression down to 5 KB for government portals, background cutout, format conversion, multi-page PDF generation, cropping, and watermarking without server uploads."
+        "@graph": [
+          {
+            "@type": "WebApplication",
+            "name": "SnapCat",
+            "url": "https://www.snapcat.in/",
+            "applicationCategory": "MultimediaApplication",
+            "operatingSystem": "All modern web browsers",
+            "browserRequirements": "Requires JavaScript, HTML5 Canvas, and WebAssembly support",
+            "offers": {
+              "@type": "Offer",
+              "price": "0",
+              "priceCurrency": "INR"
+            },
+            "featureList": [
+              "Compress JPG, PNG, SVG and WebP down to 5 KB and 20 KB",
+              "100% Client-Side AI Background Remover & Transparent PNG Maker",
+              "Bulk Image Resizer by Exact Pixel Dimensions or Percentage",
+              "Batch Image Format Converter (WebP, PNG, JPG, HEIC)",
+              "Multi-Image to Printable A4 PDF Compiler",
+              "Online Image Cropper, Rotator & Aspect Ratio Editor",
+              "HTML & Webpage URL to High-DPI Image Converter",
+              "Batch Photo Watermarking with Custom Text or Logo"
+            ],
+            "description": "Browser-native image editing suite featuring deep compression down to 5 KB for government portals, AI background cutout, format conversion, multi-page A4 PDF generation, cropping, and watermarking without server uploads."
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Does SnapCat upload my photos or documents to any server?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No. SnapCat executes 100% of image processing locally inside your web browser via HTML5 Canvas and WebAssembly. Zero bytes are uploaded to any external server."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Can I compress photos and signatures down to 20 KB or 50 KB for exam portals?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. SnapCat's Compress Image tool includes micro-size presets down to 5 KB, 20 KB, and 50 KB designed for SSC, UPSC, state exam, and visa application forms."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Is SnapCat free to use without watermarks or signups?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Every tool in SnapCat is completely free with no account registration, no usage limits, and no added watermarks."
+                }
+              }
+            ]
+          }
+        ]
       }
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Static SEO fallback replaced immediately when React mounts -->
+      <header>
+        <h1>SnapCat — Fast, Free &amp; 100% Private In-Browser Image Suite</h1>
+        <p>Compress images down to 5 KB, remove backgrounds with AI cutout, resize, convert formats, compile A4 PDFs, crop, and watermark photos 100% locally in your browser.</p>
+      </header>
+      <nav aria-label="Image Tools Directory">
+        <ul>
+          <li><a href="/compress">Compress Image — Reduce JPG, PNG, WebP down to 5 KB &amp; 20 KB</a></li>
+          <li><a href="/resize">Resize Image — Bulk Pixel &amp; Percentage Image Resizer</a></li>
+          <li><a href="/transparent">Transparent PNG — Free In-Browser AI Background Remover</a></li>
+          <li><a href="/convert">Convert Format — Bulk WebP, PNG, JPG &amp; HEIC Converter</a></li>
+          <li><a href="/pdf">Images to PDF — Combine Multiple Photos into Printable A4 PDF</a></li>
+          <li><a href="/editor">Crop &amp; Edit — Free Online Photo Cropper &amp; Aspect Ratio Tool</a></li>
+          <li><a href="/html-to-image">HTML to Image — Webpage URL &amp; Code Snapshot Generator</a></li>
+          <li><a href="/watermark">Watermark Image — Batch Text &amp; Logo Photo Watermarking</a></li>
+        </ul>
+      </nav>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
