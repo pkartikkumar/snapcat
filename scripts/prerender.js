@@ -71,6 +71,22 @@ const ROUTES = [
     h1: 'Watermark IMAGE — Stamp Custom Text or Logo Over Photos in Seconds',
     body: 'Add custom typography, opacity, rotation, and tiled or positioned watermarks across multiple images locally without uploading to third-party servers.',
   },
+  {
+    slug: 'upscale',
+    title: 'Free 4x AI Image Upscaler & Photo Enhancer (No Upload) — SnapCat',
+    description:
+      'Upscale low-resolution photos, logos, and blurry scans 4x locally inside your browser via WebAssembly AI. Free, private, zero server uploads.',
+    h1: 'AI Upscale 4× — Enhance Photo Resolution Locally in Browser',
+    body: 'Enlarge pixelated images and blurry document scans up to 4x HD resolution directly inside your browser using local WebAssembly neural networks.',
+  },
+  {
+    slug: 'magic-eraser',
+    title: 'Free AI Object Remover & Magic Eraser in Browser — SnapCat',
+    description:
+      'Brush over unwanted objects, blemishes, text, or photobombers to erase them seamlessly 100% locally in your browser with zero uploads.',
+    h1: 'Magic Eraser — Remove Unwanted Objects & Blemishes Locally with AI',
+    body: 'Paint over unwanted objects, date stamps, or background clutter and erase them cleanly inside your browser without uploading private photos.',
+  },
 ];
 
 function escapeHtml(str) {

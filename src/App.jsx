@@ -1,15 +1,18 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ConvertTool from './tools/ConvertTool';
-import TransparentTool from './tools/TransparentTool';
-import PdfTool from './tools/PdfTool';
-import EditorTool from './tools/EditorTool';
-import CompressTool from './tools/CompressTool';
-import ResizeTool from './tools/ResizeTool';
-import HtmlToImageTool from './tools/HtmlToImageTool';
-import WatermarkTool from './tools/WatermarkTool';
 import { TABS } from './constants/toolConfig';
+
+const ConvertTool = React.lazy(() => import('./tools/ConvertTool'));
+const TransparentTool = React.lazy(() => import('./tools/TransparentTool'));
+const PdfTool = React.lazy(() => import('./tools/PdfTool'));
+const EditorTool = React.lazy(() => import('./tools/EditorTool'));
+const CompressTool = React.lazy(() => import('./tools/CompressTool'));
+const ResizeTool = React.lazy(() => import('./tools/ResizeTool'));
+const HtmlToImageTool = React.lazy(() => import('./tools/HtmlToImageTool'));
+const WatermarkTool = React.lazy(() => import('./tools/WatermarkTool'));
+const UpscaleTool = React.lazy(() => import('./tools/UpscaleTool'));
+const MagicEraserTool = React.lazy(() => import('./tools/MagicEraserTool'));
 
 const TOOL_CARDS = [
   {
@@ -22,12 +25,22 @@ const TOOL_CARDS = [
     seoTitle: 'Free Image Compressor down to 5 KB & 20 KB',
   },
   {
-    id: TABS.RESIZE,
-    title: 'Resize IMAGE',
-    desc: 'Define new pixel dimensions or scale by percentage in bulk.',
-    icon: 'bi-arrows-angle-expand',
-    iconColor: '#8b5cf6',
-    seoTitle: 'Bulk Image Resizer with Exact Dimensions',
+    id: TABS.UPSCALE,
+    title: 'AI Upscale 4×',
+    desc: 'Enhance low-resolution photos and blurry scans up to 4× HD locally via WebAssembly AI.',
+    icon: 'bi-stars',
+    badge: 'New AI',
+    iconColor: '#a855f7',
+    seoTitle: 'Free 4x AI Image Upscaler & Photo Enhancer (No Upload)',
+  },
+  {
+    id: TABS.MAGIC_ERASER,
+    title: 'Magic Eraser',
+    desc: 'Brush over unwanted objects, blemishes, or text to erase them seamlessly with local AI.',
+    icon: 'bi-magic',
+    badge: 'New AI',
+    iconColor: '#f43f5e',
+    seoTitle: 'Free AI Object Remover & Magic Eraser in Browser',
   },
   {
     id: TABS.TRANSPARENT,
@@ -37,6 +50,14 @@ const TOOL_CARDS = [
     badge: 'AI Smart',
     iconColor: '#f97316',
     seoTitle: 'In-Browser AI Background Remover & Cutout',
+  },
+  {
+    id: TABS.RESIZE,
+    title: 'Resize IMAGE',
+    desc: 'Define new pixel dimensions or scale by percentage in bulk.',
+    icon: 'bi-arrows-angle-expand',
+    iconColor: '#8b5cf6',
+    seoTitle: 'Bulk Image Resizer with Exact Dimensions',
   },
   {
     id: TABS.CONVERT,
@@ -94,6 +115,16 @@ const getTabFromLocation = () => {
   return null;
 };
 
+const setMetaProperty = (prop, value) => {
+  let tag = document.querySelector(`meta[property="${prop}"]`);
+  if (!tag) {
+    tag = document.createElement('meta');
+    tag.setAttribute('property', prop);
+    document.head.appendChild(tag);
+  }
+  tag.setAttribute('content', value);
+};
+
 export default function App() {
   const [activeTab, setActiveTab] = useState(getTabFromLocation);
   const [switchOpen, setSwitchOpen] = useState(false);
@@ -122,7 +153,7 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Synchronize Title, Meta Description, and Canonical Tag on Route Change
+  // Synchronize Title, Meta Description, Open Graph, and Canonical Tag on Route Change
   useEffect(() => {
     const descTag = document.querySelector('meta[name="description"]');
     let canonicalTag = document.querySelector('link[rel="canonical"]');
@@ -139,25 +170,29 @@ export default function App() {
 
     if (activeTab) {
       const meta = TOOL_CARDS.find((t) => t.id === activeTab);
-      canonicalTag.setAttribute('href', `https://www.snapcat.in/${activeTab}`);
+      const currentUrl = `https://www.snapcat.in/${activeTab}`;
+      canonicalTag.setAttribute('href', currentUrl);
+
       if (meta) {
-        document.title = `${meta.seoTitle || meta.title} — SnapCat`;
-        if (descTag) {
-          descTag.setAttribute(
-            'content',
-            `${meta.desc} Process photos 100% locally on your device with zero cloud uploads.`
-          );
-        }
+        const currentTitle = `${meta.seoTitle || meta.title} — SnapCat`;
+        const currentDesc = `${meta.desc} Process photos 100% locally on your device with zero cloud uploads.`;
+        document.title = currentTitle;
+        if (descTag) descTag.setAttribute('content', currentDesc);
+        setMetaProperty('og:url', currentUrl);
+        setMetaProperty('og:title', currentTitle);
+        setMetaProperty('og:description', currentDesc);
       }
     } else {
-      canonicalTag.setAttribute('href', 'https://www.snapcat.in/');
-      document.title = 'SnapCat — Fast, Free & 100% Private In-Browser Image Suite';
-      if (descTag) {
-        descTag.setAttribute(
-          'content',
-          'Convert, compress down to 5 KB, remove backgrounds, crop, and merge images to PDF 100% locally in your browser. Zero uploads, zero tracking.'
-        );
-      }
+      const homeUrl = 'https://www.snapcat.in/';
+      const homeTitle = 'SnapCat — Fast, Free & 100% Private In-Browser Image Suite';
+      const homeDesc =
+        'Convert, compress down to 5 KB, upscale 4x, erase objects, remove backgrounds, crop, and merge images to PDF 100% locally in your browser.';
+      canonicalTag.setAttribute('href', homeUrl);
+      document.title = homeTitle;
+      if (descTag) descTag.setAttribute('content', homeDesc);
+      setMetaProperty('og:url', homeUrl);
+      setMetaProperty('og:title', homeTitle);
+      setMetaProperty('og:description', homeDesc);
     }
   }, [activeTab]);
 
@@ -358,8 +393,9 @@ export default function App() {
                             e.preventDefault();
                             navigateToTab(tool.id);
                           }}
-                          className={`dropdown-item d-flex align-items-center gap-2 small px-3 py-2 ${activeTab === tool.id ? 'active btn-snapcat' : 'text-body'
-                            }`}
+                          className={`dropdown-item d-flex align-items-center gap-2 small px-3 py-2 ${
+                            activeTab === tool.id ? 'active btn-snapcat' : 'text-body'
+                          }`}
                         >
                           <i
                             className={`bi ${tool.icon}`}
@@ -384,17 +420,21 @@ export default function App() {
 
             {/* Tool Viewport */}
             <div className="tab-content">
-              {activeTab === TABS.COMPRESS && <CompressTool />}
-              {activeTab === TABS.RESIZE && <ResizeTool />}
-              {activeTab === TABS.TRANSPARENT && <TransparentTool />}
-              {activeTab === TABS.CONVERT && <ConvertTool />}
-              {activeTab === TABS.PDF && <PdfTool />}
-              {activeTab === TABS.EDITOR && <EditorTool />}
-              {activeTab === TABS.HTML_TO_IMAGE && <HtmlToImageTool />}
-              {activeTab === TABS.WATERMARK && <WatermarkTool />}
+              <Suspense fallback={<div className="text-center py-5 text-secondary">Loading tool...</div>}>
+                {activeTab === TABS.COMPRESS && <CompressTool />}
+                {activeTab === TABS.UPSCALE && <UpscaleTool />}
+                {activeTab === TABS.MAGIC_ERASER && <MagicEraserTool />}
+                {activeTab === TABS.RESIZE && <ResizeTool />}
+                {activeTab === TABS.TRANSPARENT && <TransparentTool />}
+                {activeTab === TABS.CONVERT && <ConvertTool />}
+                {activeTab === TABS.PDF && <PdfTool />}
+                {activeTab === TABS.EDITOR && <EditorTool />}
+                {activeTab === TABS.HTML_TO_IMAGE && <HtmlToImageTool />}
+                {activeTab === TABS.WATERMARK && <WatermarkTool />}
+              </Suspense>
             </div>
 
-            {/* Add this right below <div className="tab-content"> in View 2 of App.jsx */}
+            {/* Tool SEO Info & Cross-Linking */}
             {activeToolMeta && (
               <section className="mt-5 pt-4 border-top">
                 <div className="p-4 rounded-4 bg-body border shadow-sm">

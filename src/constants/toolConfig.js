@@ -8,6 +8,8 @@ export const TABS = {
   HTML_TO_IMAGE: 'html-to-image',
   WATERMARK: 'watermark',
   AI_GENERATE: 'ai-generate',
+  UPSCALE: 'upscale',
+  MAGIC_ERASER: 'magic-eraser',
 };
 
 export const ACCEPTED_IMAGE_TYPES = [
