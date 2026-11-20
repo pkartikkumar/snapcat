@@ -1,6 +1,7 @@
 export const TABS = {
   RESIZE: 'resize',
   COMPRESS: 'compress',
+  COMPRESS_PDF: 'compress-pdf',
   CONVERT: 'convert',
   TRANSPARENT: 'transparent',
   PDF: 'pdf',

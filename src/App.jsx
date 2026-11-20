@@ -6,6 +6,7 @@ import { TABS } from './constants/toolConfig';
 const ConvertTool = React.lazy(() => import('./tools/ConvertTool'));
 const TransparentTool = React.lazy(() => import('./tools/TransparentTool'));
 const PdfTool = React.lazy(() => import('./tools/PdfTool'));
+const CompressPdfTool = React.lazy(() => import('./tools/CompressPdfTool'));
 const EditorTool = React.lazy(() => import('./tools/EditorTool'));
 const CompressTool = React.lazy(() => import('./tools/CompressTool'));
 const ResizeTool = React.lazy(() => import('./tools/ResizeTool'));
@@ -23,6 +24,15 @@ const TOOL_CARDS = [
     badge: 'Popular',
     iconColor: '#0ea5e9',
     seoTitle: 'Free Image Compressor down to 5 KB & 20 KB',
+  },
+  {
+    id: TABS.COMPRESS_PDF,
+    title: 'Compress PDF',
+    desc: 'Reduce PDF file size to 100 KB – 500 KB for government & exam portals with zero uploads.',
+    icon: 'bi-file-earmark-arrow-down-fill',
+    badge: 'New',
+    iconColor: '#dc2626',
+    seoTitle: 'Free PDF Compressor Online — Reduce PDF Size in KB (No Upload)',
   },
   {
     id: TABS.UPSCALE,
@@ -108,7 +118,6 @@ const getTabFromLocation = () => {
   const pathSlug = window.location.pathname.replace(/^\/+|\/+$/g, '').toLowerCase();
   if (validTabValues.includes(pathSlug)) return pathSlug;
 
-  // Support legacy #hash links on initial load
   const hashSlug = window.location.hash.replace('#', '').toLowerCase();
   if (validTabValues.includes(hashSlug)) return hashSlug;
 
@@ -130,7 +139,6 @@ export default function App() {
   const [switchOpen, setSwitchOpen] = useState(false);
   const switchDropdownRef = useRef(null);
 
-  // Persistent Day/Night Theme State
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('snapcat_theme');
     if (saved) return saved;
@@ -142,7 +150,6 @@ export default function App() {
     localStorage.setItem('snapcat_theme', theme);
   }, [theme]);
 
-  // Clean SPA Navigation Helper
   const navigateToTab = (tabId) => {
     const targetPath = tabId ? `/${tabId}` : '/';
     if (window.location.pathname !== targetPath || window.location.hash) {
@@ -153,7 +160,6 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Synchronize Title, Meta Description, Open Graph, and Canonical Tag on Route Change
   useEffect(() => {
     const descTag = document.querySelector('meta[name="description"]');
     let canonicalTag = document.querySelector('link[rel="canonical"]');
@@ -163,7 +169,6 @@ export default function App() {
       document.head.appendChild(canonicalTag);
     }
 
-    // Upgrade legacy #hash URL in address bar to clean /path
     if (window.location.hash && activeTab) {
       window.history.replaceState({}, '', `/${activeTab}`);
     }
@@ -175,7 +180,7 @@ export default function App() {
 
       if (meta) {
         const currentTitle = `${meta.seoTitle || meta.title} — SnapCat`;
-        const currentDesc = `${meta.desc} Process photos 100% locally on your device with zero cloud uploads.`;
+        const currentDesc = `${meta.desc} Process files 100% locally on your device with zero cloud uploads.`;
         document.title = currentTitle;
         if (descTag) descTag.setAttribute('content', currentDesc);
         setMetaProperty('og:url', currentUrl);
@@ -186,7 +191,7 @@ export default function App() {
       const homeUrl = 'https://www.snapcat.in/';
       const homeTitle = 'SnapCat — Fast, Free & 100% Private In-Browser Image Suite';
       const homeDesc =
-        'Convert, compress down to 5 KB, upscale 4x, erase objects, remove backgrounds, crop, and merge images to PDF 100% locally in your browser.';
+        'Convert, compress down to 5 KB, compress PDFs, upscale 4x, erase objects, remove backgrounds, crop, and merge images to PDF 100% locally in your browser.';
       canonicalTag.setAttribute('href', homeUrl);
       document.title = homeTitle;
       if (descTag) descTag.setAttribute('content', homeDesc);
@@ -196,7 +201,6 @@ export default function App() {
     }
   }, [activeTab]);
 
-  // Listen to browser Back/Forward navigation
   useEffect(() => {
     const handlePopState = () => {
       setActiveTab(getTabFromLocation());
@@ -205,7 +209,6 @@ export default function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Close workspace dropdown when clicking outside
   useEffect(() => {
     const handleOutsideClick = (e) => {
       if (switchDropdownRef.current && !switchDropdownRef.current.contains(e.target)) {
@@ -224,7 +227,6 @@ export default function App() {
 
   return (
     <div className="d-flex flex-column min-vh-100">
-      {/* Header with Active Tab Indicator and Dropdown */}
       <Navbar
         theme={theme}
         onToggleTheme={toggleTheme}
@@ -234,12 +236,9 @@ export default function App() {
         toolCards={TOOL_CARDS}
       />
 
-      {/* Main Content */}
       <main className="container my-4 my-md-5 flex-grow-1" style={{ maxWidth: '1050px' }}>
-        {/* VIEW 1: HOME CARD DASHBOARD */}
         {activeTab === null ? (
           <>
-            {/* Hero Section */}
             <div className="text-center mb-5">
               <h1 className="fw-bolder mb-2 text-body display-6">
                 Every tool you need to work with images in <span style={{ color: 'var(--primary-orange)' }}>one place</span>
@@ -249,7 +248,6 @@ export default function App() {
               </p>
             </div>
 
-            {/* Crawlable Tool Grid Cards */}
             <div className="row g-4">
               {TOOL_CARDS.map((tool) => (
                 <div key={tool.id} className="col-12 col-sm-6 col-lg-4">
@@ -265,7 +263,6 @@ export default function App() {
                       border: '1px solid var(--bs-border-color-translucent)',
                     }}
                   >
-                    {/* Badge if present */}
                     {tool.badge && (
                       <span
                         className="badge position-absolute top-0 end-0 m-3 px-2.5 py-1 rounded-pill"
@@ -280,7 +277,6 @@ export default function App() {
                       </span>
                     )}
 
-                    {/* Icon */}
                     <div
                       className="rounded-3 d-inline-flex align-items-center justify-content-center mb-3"
                       style={{
@@ -293,7 +289,6 @@ export default function App() {
                       <i className={`bi ${tool.icon} fs-3`}></i>
                     </div>
 
-                    {/* Title & Description */}
                     <h2 className="h5 fw-bold mb-2 text-body">{tool.title}</h2>
                     <p className="text-secondary small mb-0 flex-grow-1">{tool.desc}</p>
                   </a>
@@ -301,10 +296,9 @@ export default function App() {
               ))}
             </div>
 
-            {/* CRAWLABLE SEO / FAQ SECTION */}
             <section className="mt-5 pt-5 border-top">
               <div className="text-center mb-4">
-                <h2 className="h4 fw-bold text-body">Why Use SnapCat for Image Editing?</h2>
+                <h2 className="h4 fw-bold text-body">Why Use SnapCat for Image &amp; PDF Editing?</h2>
                 <p className="text-secondary small mx-auto" style={{ maxWidth: '600px' }}>
                   A complete suite built for speed, exam document compliance, and total user privacy.
                 </p>
@@ -317,7 +311,7 @@ export default function App() {
                       <i className="bi bi-shield-check text-success fs-5"></i> 100% Client-Side Privacy
                     </h3>
                     <p className="mb-0">
-                      Standard converters upload your sensitive photos, identity cards, and personal documents to foreign servers. SnapCat runs locally inside your browser via Canvas API and WebAssembly. Your photos never touch any server.
+                      Standard converters upload your sensitive photos, identity cards, and personal documents to foreign servers. SnapCat runs locally inside your browser via Canvas API and WebAssembly. Your files never touch any server.
                     </p>
                   </div>
                 </div>
@@ -325,10 +319,10 @@ export default function App() {
                 <div className="col-12 col-md-4">
                   <div className="p-3 rounded-4 bg-body border h-100 shadow-sm">
                     <h3 className="h6 fw-bold text-body mb-2 d-flex align-items-center gap-2">
-                      <i className="bi bi-file-earmark-check text-primary fs-5"></i> Exam & Portal Ready (5 KB – 50 KB)
+                      <i className="bi bi-file-earmark-check text-primary fs-5"></i> Exam &amp; Portal Ready (5 KB – 500 KB)
                     </h3>
                     <p className="mb-0">
-                      Government portals (SSC, UPSC, state examinations, visa applications) impose strict size ceilings. SnapCat includes smart micro-presets to compress photos and signatures down to exact targets without blurry pixelation.
+                      Government portals (SSC, UPSC, state examinations, visa applications) impose strict size ceilings. SnapCat includes smart presets to compress photos, signatures, and PDFs down to exact targets without blurry pixelation.
                     </p>
                   </div>
                 </div>
@@ -339,7 +333,7 @@ export default function App() {
                       <i className="bi bi-lightning-charge-fill text-warning fs-5"></i> Zero Bandwidth Waste
                     </h3>
                     <p className="mb-0">
-                      Processing happens instantly on your device hardware. You never waste time or mobile data waiting for massive high-resolution photos to upload and download.
+                      Processing happens instantly on your device hardware. You never waste time or mobile data waiting for massive high-resolution photos or PDFs to upload and download.
                     </p>
                   </div>
                 </div>
@@ -347,9 +341,7 @@ export default function App() {
             </section>
           </>
         ) : (
-          /* VIEW 2: ACTIVE TOOL WORKSPACE */
           <div>
-            {/* Back link & quick Switcher dropdown */}
             <div className="d-flex align-items-center justify-content-between mb-4">
               <a
                 href="/"
@@ -363,7 +355,6 @@ export default function App() {
                 <span>All Tools</span>
               </a>
 
-              {/* Controlled React Dropdown */}
               <div className="position-relative" ref={switchDropdownRef}>
                 <button
                   className="btn btn-sm btn-outline-secondary rounded-pill px-3 d-flex align-items-center gap-1.5"
@@ -410,7 +401,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* Active Tool Header */}
             {activeToolMeta && (
               <div className="text-center mb-4">
                 <h1 className="h3 fw-bold text-body mb-1">{activeToolMeta.title}</h1>
@@ -418,10 +408,10 @@ export default function App() {
               </div>
             )}
 
-            {/* Tool Viewport */}
             <div className="tab-content">
               <Suspense fallback={<div className="text-center py-5 text-secondary">Loading tool...</div>}>
                 {activeTab === TABS.COMPRESS && <CompressTool />}
+                {activeTab === TABS.COMPRESS_PDF && <CompressPdfTool />}
                 {activeTab === TABS.UPSCALE && <UpscaleTool />}
                 {activeTab === TABS.MAGIC_ERASER && <MagicEraserTool />}
                 {activeTab === TABS.RESIZE && <ResizeTool />}
@@ -434,7 +424,6 @@ export default function App() {
               </Suspense>
             </div>
 
-            {/* Tool SEO Info & Cross-Linking */}
             {activeToolMeta && (
               <section className="mt-5 pt-4 border-top">
                 <div className="p-4 rounded-4 bg-body border shadow-sm">
@@ -467,7 +456,6 @@ export default function App() {
         )}
       </main>
 
-      {/* Footer */}
       <Footer theme={theme} />
     </div>
   );

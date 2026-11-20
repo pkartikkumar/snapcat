@@ -16,6 +16,14 @@ const ROUTES = [
     body: 'Reduce JPG, PNG, SVG, and WebP file sizes locally inside your browser without uploading sensitive ID cards or photos to any server. Ideal for SSC, UPSC, passport, and visa portals.',
   },
   {
+  slug: 'compress-pdf',
+  title: 'Free PDF Compressor Online — Reduce PDF Size in KB (No Upload) — SnapCat',
+  description:
+    'Compress multi-page PDF documents down to 100 KB – 500 KB locally in your browser for government and exam portals. Zero file uploads.',
+  h1: 'Compress PDF — Reduce PDF File Size Locally in Your Browser',
+  body: 'Shrink large PDF documents, scanned certificates, and application forms down to strict KB limits directly on your device with zero server uploads.',
+},
+  {
     slug: 'resize',
     title: 'Bulk Image Resizer with Exact Dimensions — SnapCat',
     description:
