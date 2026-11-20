@@ -29,7 +29,7 @@ export default function UpscaleTool() {
       setResult(upscaled);
     } catch (err) {
       console.error(err);
-      setError('Model error: Ensure /models/realesrgan-x4.onnx exists in public/models/.');
+      setError(`Upscale error: ${err?.message || 'Unable to run AI model in browser.'}`);
     } finally {
       setLoading(false);
     }
@@ -78,7 +78,11 @@ export default function UpscaleTool() {
                 onClick={handleUpscale}
                 disabled={loading}
               >
-                {loading ? `Upscaling... ${progress}%` : 'Upscale 4× Now'}
+                {loading
+                  ? progress === 0
+                    ? 'Loading AI Model...'
+                    : `Upscaling... ${progress}%`
+                  : 'Upscale 4× Now'}
               </button>
             </div>
           </div>
@@ -87,7 +91,7 @@ export default function UpscaleTool() {
             <div className="progress mb-4" style={{ height: '10px' }}>
               <div
                 className="progress-bar progress-bar-striped progress-bar-animated bg-warning"
-                style={{ width: `${progress}%` }}
+                style={{ width: `${progress || 15}%` }}
               ></div>
             </div>
           )}

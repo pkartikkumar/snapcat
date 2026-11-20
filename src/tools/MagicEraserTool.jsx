@@ -79,7 +79,7 @@ export default function MagicEraserTool() {
       clearMask();
     } catch (err) {
       console.error(err);
-      setError('Model error: Ensure /models/lama-inpaint.onnx exists in public/models/.');
+      setError(`Erase error: ${err?.message || 'Unable to run AI model in browser.'}`);
     } finally {
       setLoading(false);
     }

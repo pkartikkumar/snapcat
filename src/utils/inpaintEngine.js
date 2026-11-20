@@ -1,8 +1,11 @@
 import * as ort from 'onnxruntime-web';
 import { createLocalSession } from './onnxHelper';
 
+const INPAINT_MODEL_URL =
+  'https://huggingface.co/Carve/LaMa-ONNX/resolve/main/lama_fp32.onnx';
+
 export async function runInpainting(imageCanvas, maskCanvas) {
-  const session = await createLocalSession('/models/lama-inpaint.onnx');
+  const session = await createLocalSession(INPAINT_MODEL_URL);
   const size = 512;
 
   const tmpImg = document.createElement('canvas');

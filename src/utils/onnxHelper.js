@@ -46,7 +46,7 @@ export async function createLocalSession(modelPath) {
   const sessionPromise = (async () => {
     const modelBuffer = await getCachedModelBuffer(modelPath);
     return ort.InferenceSession.create(modelBuffer, {
-      executionProviders: ['webgpu', 'wasm'],
+      executionProviders: ['wasm'],
       graphOptimizationLevel: 'all',
     });
   })();
